@@ -1,0 +1,19 @@
+package com.alexlo.msvc_user.service;
+
+import com.alexlo.msvc_user.dto.request.CreateUserDTO;
+import com.alexlo.msvc_user.dto.response.UserResponseDTO;
+
+import java.util.List;
+
+public interface UserService {
+
+    UserResponseDTO create(CreateUserDTO dto);
+
+    UserResponseDTO update(CreateUserDTO dto);
+
+    UserResponseDTO findById(Long id);
+
+    List<UserResponseDTO> all();
+
+    void delete(Long id);
+}
