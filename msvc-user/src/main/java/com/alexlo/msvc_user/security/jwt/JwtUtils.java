@@ -14,7 +14,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -28,6 +27,8 @@ public class JwtUtils {
 
     //generar token
     public String generateAccesToken(User user){
+        if (!user.isEnabled()) throw new RuntimeException("El usuario está inactivo");
+
         List<String> roles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

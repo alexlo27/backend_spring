@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -35,20 +34,49 @@ public class UserEntity {
     @NotBlank
     private String password;
 
+    @Builder.Default
     @Column(name = "is_enabled")
-    private boolean isEnabled;
+    private Boolean isEnabled = true;
 
+    @Builder.Default
     @Column(name = "account_no_expired")
-    private boolean accountNoExpired;
+    private Boolean accountNoExpired = true;
 
+    @Builder.Default
     @Column(name = "account_no_locked")
-    private boolean accountNoLocked;
+    private Boolean accountNoLocked = true;
 
+    @Builder.Default
     @Column(name = "credential_no_expired")
-    private boolean credentialNoExpired;
+    private Boolean credentialNoExpired = true;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleEntity.class)
+    @ManyToMany( fetch = FetchType.LAZY, targetEntity = RoleEntity.class)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
 
+    @Override
+    public boolean equals(Object o){
+        if( this == o) return true;
+        if( !(o instanceof UserEntity user)) return false;
+        return id != null && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", accountNoExpired=" + accountNoExpired +
+                ", accountNoLocked=" + accountNoLocked +
+                ", credentialNoExpired=" + credentialNoExpired +
+                '}';
+    }
 }

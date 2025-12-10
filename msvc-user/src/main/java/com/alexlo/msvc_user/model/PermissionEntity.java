@@ -2,12 +2,12 @@ package com.alexlo.msvc_user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.util.Objects;
+
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,6 +27,24 @@ public class PermissionEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @Override
+    public boolean equals(Object o) {
+        if( this == o) return true;
+        if( !(o instanceof  PermissionEntity permission)) return false;
+        return id != null && id.equals(permission.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
+    @Override
+    public String toString() {
+        return "PermissionEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

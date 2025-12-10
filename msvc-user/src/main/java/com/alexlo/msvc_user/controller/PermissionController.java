@@ -1,17 +1,20 @@
 package com.alexlo.msvc_user.controller;
 
 import com.alexlo.msvc_user.dto.request.CreatePermissionDTO;
+import com.alexlo.msvc_user.dto.response.PageResponse;
 import com.alexlo.msvc_user.dto.response.PermissionResponseDTO;
 import com.alexlo.msvc_user.service.PermissionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/permissions")
+@RequestMapping("/permission")
 public class PermissionController {
 
     @Autowired
@@ -30,6 +33,12 @@ public class PermissionController {
     @GetMapping("/{id}")
     public ResponseEntity<PermissionResponseDTO> findByIdPermission(@PathVariable Long id){
         return ResponseEntity.ok(permissionService.findById(id));
+    }
+
+    @GetMapping("/paginate")
+    public ResponseEntity<PageResponse<PermissionResponseDTO>> allPaginatePermisssion(/*@RequestParam(defaultValue = "1") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size*/ Pageable pageable){
+        return ResponseEntity.ok(permissionService.all(/*page, size*/ pageable));
     }
 
     @GetMapping

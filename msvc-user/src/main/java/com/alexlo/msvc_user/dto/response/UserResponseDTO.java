@@ -6,7 +6,7 @@ public record UserResponseDTO(
         Long id,
         String email,
         String username,
-        String password,
+        Boolean isEnabled,
         Set<String>roles
 ) {
 }

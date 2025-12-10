@@ -1,12 +1,18 @@
 package com.alexlo.msvc_user.service;
 
 import com.alexlo.msvc_user.dto.request.CreatePermissionDTO;
+import com.alexlo.msvc_user.dto.response.PageResponse;
 import com.alexlo.msvc_user.dto.response.PermissionResponseDTO;
 import com.alexlo.msvc_user.exception.NotFoundException;
+import com.alexlo.msvc_user.mappers.PageMapper;
 import com.alexlo.msvc_user.mappers.PermissionMapper;
 import com.alexlo.msvc_user.model.PermissionEntity;
 import com.alexlo.msvc_user.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +46,19 @@ public class PermissionServiceImpl implements PermissionService{
     }
 
     @Override
+    public PageResponse<PermissionResponseDTO> all(/*int page, int size*/ Pageable pageable) {
+        /*page = Math.max(0, page-1);
+        size = size <= 0 ? 10 : size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());*/
+        Page<PermissionEntity> result = permissionRepository.findAll(pageable);
+        return PageMapper.map(result, permissionMapper::toResponse);
+        //return result.map(permissionMapper::toResponse);
+        //return permissionMapper.toResponseList(permissionRepository.findAll());
+    }
+
+    @Override
     public List<PermissionResponseDTO> all() {
+        //Page<PermissionEntity> result = permissionRepository.findAll();
         return permissionMapper.toResponseList(permissionRepository.findAll());
     }
 

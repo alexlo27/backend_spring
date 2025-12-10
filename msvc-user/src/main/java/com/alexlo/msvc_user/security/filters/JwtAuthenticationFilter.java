@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserEntity userEntity = null;
         String username = "";
         String password = "";
-
+        System.out.println("xxxx");
         try {
             userEntity = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
             username = userEntity.getUsername();
@@ -50,6 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        System.out.println(">>>>"+authenticationToken.isAuthenticated());
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -59,7 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        System.out.println("=>>"+user.getAuthorities());
+        //System.out.println("=>>"+user.getAuthorities());
         String token = jwtUtils.generateAccesToken(user);
         response.addHeader("Authorization", token);
 

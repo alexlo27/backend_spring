@@ -1,14 +1,18 @@
 package com.alexlo.msvc_user.service;
 
 import com.alexlo.msvc_user.dto.request.CreateRoleDTO;
+import com.alexlo.msvc_user.dto.response.PageResponse;
 import com.alexlo.msvc_user.dto.response.RoleResponseDTO;
 import com.alexlo.msvc_user.exception.NotFoundException;
+import com.alexlo.msvc_user.mappers.PageMapper;
 import com.alexlo.msvc_user.mappers.RoleMapper;
+import com.alexlo.msvc_user.mappers.RoleWithPermissionMapper;
 import com.alexlo.msvc_user.model.PermissionEntity;
 import com.alexlo.msvc_user.model.RoleEntity;
 import com.alexlo.msvc_user.repository.PermissionRepository;
 import com.alexlo.msvc_user.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -29,6 +33,9 @@ public class RoleServiceImpl implements RoleService{
     @Autowired
     RoleMapper roleMapper;
 
+    @Autowired
+    RoleWithPermissionMapper roleWithPermissionMapper;
+
     @Override
     public RoleResponseDTO create(CreateRoleDTO dto) {
         Set<String> permissions = Optional.ofNullable(dto.permissions()).orElse(Collections.emptySet());
@@ -37,7 +44,7 @@ public class RoleServiceImpl implements RoleService{
                 .name(dto.name())
                 .permissions(permissionsEntity)
                 .build();
-        return roleMapper.toResponse(roleRepository.save(roleEntity));
+        return roleWithPermissionMapper.toResponse(roleRepository.save(roleEntity));
     }
 
     @Override
@@ -51,7 +58,7 @@ public class RoleServiceImpl implements RoleService{
         roleEntity.setName(dto.name());
 
         //roleMapper.updateEntityFromDto(dto, roleEntity);
-        return roleMapper.toResponse(roleRepository.save(roleEntity));
+        return roleWithPermissionMapper.toResponse(roleRepository.save(roleEntity));
     }
 
     @Override
@@ -62,8 +69,25 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
+    public RoleResponseDTO findByIdWithPermissions(Long id) {
+        RoleEntity roleEntity =  roleRepository.findById(id)
+                .orElseThrow( () -> new NotFoundException("El rol no existe"));
+        return roleWithPermissionMapper.toResponse(roleEntity);
+    }
+
+    @Override
     public List<RoleResponseDTO> all() {
         return roleMapper.toResponseList(roleRepository.findAll());
+    }
+
+    @Override
+    public List<RoleResponseDTO> allWithPermissions() {
+        return roleWithPermissionMapper.toResponseList(roleRepository.findAll());
+    }
+
+    @Override
+    public PageResponse<RoleResponseDTO> allWithPermissions(Pageable pageable) {
+        return PageMapper.map(roleRepository.findAll(pageable), roleMapper::toResponse);
     }
 
     @Override

@@ -92,6 +92,8 @@ public class ScurityConfig {
         return authenticationManagerBuilder.build();
     }*/
 
+
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

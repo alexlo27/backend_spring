@@ -1,10 +1,12 @@
 package com.alexlo.msvc_user.controller;
 
 import com.alexlo.msvc_user.dto.request.CreateRoleDTO;
+import com.alexlo.msvc_user.dto.response.PageResponse;
 import com.alexlo.msvc_user.dto.response.RoleResponseDTO;
 import com.alexlo.msvc_user.service.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +30,30 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoleResponseDTO> findByIdRole(@PathVariable Long id){
+    public ResponseEntity<RoleResponseDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(roleService.findById(id));
     }
 
+    @GetMapping("/{id}/with-permissions")
+    public ResponseEntity<RoleResponseDTO> findByIdWithPermissions(@PathVariable Long id){
+        return ResponseEntity.ok(roleService.findByIdWithPermissions(id));
+    }
+
     @GetMapping
-    public ResponseEntity<List<RoleResponseDTO>> allRole(){
+    public ResponseEntity<List<RoleResponseDTO>> all(){
+        System.out.println("controlador");
         return ResponseEntity.ok(roleService.all());
+    }
+
+    @GetMapping("/paginate")
+    public ResponseEntity<PageResponse<RoleResponseDTO>> all(Pageable pageable){
+        return ResponseEntity.ok(roleService.allWithPermissions(pageable));
+    }
+
+    @GetMapping("/with-permissions")
+    public ResponseEntity<List<RoleResponseDTO>> allWithPermission(){
+        System.out.println("controlador");
+        return ResponseEntity.ok(roleService.allWithPermissions());
     }
 
     @DeleteMapping("/{id}")

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -20,8 +21,10 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println(">>> Cargando usuario desde UserDetailsService");
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario "+username+" no existe."));
 
@@ -32,10 +35,10 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
 
         return new User(userEntity.getUsername(),
                 userEntity.getPassword(),
-                true,
-                true,
-                true,
-                true,
+                userEntity.getIsEnabled(),
+                userEntity.getAccountNoExpired(),
+                userEntity.getCredentialNoExpired(),
+                userEntity.getAccountNoLocked(),
                 authorities);
     }
 }
