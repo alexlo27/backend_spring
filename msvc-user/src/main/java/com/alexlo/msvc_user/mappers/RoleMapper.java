@@ -2,30 +2,37 @@ package com.alexlo.msvc_user.mappers;
 
 import com.alexlo.msvc_user.dto.request.CreateRoleDTO;
 import com.alexlo.msvc_user.dto.response.RoleResponseDTO;
+import com.alexlo.msvc_user.model.PermissionEntity;
 import com.alexlo.msvc_user.model.RoleEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
 
-    @Mapping(target = "permissions", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
     RoleEntity toEntity(CreateRoleDTO dto);
 
+    @Named("toBasic")
     @Mapping(target = "permissions", ignore = true)
     RoleResponseDTO toResponse(RoleEntity entity);
 
-    @Mapping(target = "permissions", ignore = true)
-    List<RoleResponseDTO> toResponseList(Iterable<RoleEntity> entities);
 
-    @Named("roleBasicName")
+    @Named("toDetail")
+    RoleResponseDTO toResponseDetail(RoleEntity entity);
+
+    @IterableMapping(qualifiedByName = "toBasic")
+    List<RoleResponseDTO> toResponseListBasic(List<RoleEntity> entities);
+
+    @IterableMapping(qualifiedByName = "toDetail")
     @Mapping(target = "permissions", ignore = true)
-    default String mapToName(RoleEntity entity) {
-        return entity.getName();
+    List<RoleResponseDTO> toResponseListDetail(List<RoleEntity> entities);
+
+    default PermissionEntity map(String permissionName) {
+        return PermissionEntity.builder().name(permissionName).build();
+    }
+
+    default String map(PermissionEntity permission) {
+        return permission.getName();
     }
 }

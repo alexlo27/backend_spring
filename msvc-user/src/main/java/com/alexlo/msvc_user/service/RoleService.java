@@ -24,7 +24,7 @@ public interface RoleService {
 
     List<RoleResponseDTO> allWithPermissions();
 
-    PageResponse<RoleResponseDTO> allWithPermissions(Pageable pageable);
+    PageResponse<RoleResponseDTO> allWithPermissions(String name, Pageable pageable);
 
     void delete(Long id);
 }

@@ -8,6 +8,7 @@ import com.alexlo.msvc_user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +47,8 @@ public class UserController {
     }
 
     @GetMapping("/paginate")
-    public ResponseEntity<PageResponse<UserResponseDTO>> allUser(Pageable pageable){
-        return ResponseEntity.ok(userService.allWithRoles(pageable));
+    public ResponseEntity<PageResponse<UserResponseDTO>> allUser(@RequestParam(required = false) String username,  Pageable pageable){
+        return ResponseEntity.ok(userService.allWithRoles(username, pageable));
     }
 
     @DeleteMapping("/{id}")

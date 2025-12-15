@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService{
         Set<RoleEntity> rolesEntity = resolveRoles(roles);
 
         UserEntity userEntity =  UserEntity.builder()
-                .username(dto.username())
+                .username(dto.username().toLowerCase())
                 .password(passwordEncoder.encode(dto.password()))
                 .email(dto.email())
                 .isEnabled(dto.isEnabled())
@@ -83,10 +83,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public PageResponse<UserResponseDTO> allWithRoles(Pageable pageable) {
+    public PageResponse<UserResponseDTO> allWithRoles(String username, Pageable pageable) {
         //return PageMapper.map(userRepository.findAllBy(pageable),userMapper::toResponseDetail);
-
-        Page<Long> pageOfIds = userRepository.findAllIds(pageable);
+        Page<Long> pageOfIds = userRepository.findAllIds(username, pageable);
 
         if (pageOfIds.isEmpty()) {
             return PageMapper.map(Page.empty(pageable), userMapper::toResponseDetail);
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService{
 
         List<UserEntity> orderedUsers = pageOfIds.getContent().stream()
                 .map(mapUsers::get)
-                .collect(Collectors.toList());
+                .toList();
 
         // Mapear con tu mapper y devolver respuesta paginada
         Page<UserEntity> finalPage =

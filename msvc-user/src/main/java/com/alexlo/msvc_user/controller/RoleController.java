@@ -46,8 +46,8 @@ public class RoleController {
     }
 
     @GetMapping("/paginate")
-    public ResponseEntity<PageResponse<RoleResponseDTO>> all(Pageable pageable){
-        return ResponseEntity.ok(roleService.allWithPermissions(pageable));
+    public ResponseEntity<PageResponse<RoleResponseDTO>> all(@RequestParam(required = false) String name, Pageable pageable){
+        return ResponseEntity.ok(roleService.allWithPermissions(name, pageable));
     }
 
     @GetMapping("/with-permissions")

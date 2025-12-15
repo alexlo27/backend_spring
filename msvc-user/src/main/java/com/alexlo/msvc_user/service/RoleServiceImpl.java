@@ -12,13 +12,12 @@ import com.alexlo.msvc_user.model.RoleEntity;
 import com.alexlo.msvc_user.repository.PermissionRepository;
 import com.alexlo.msvc_user.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,7 +76,7 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public List<RoleResponseDTO> all() {
-        return roleMapper.toResponseList(roleRepository.findAll());
+        return roleMapper.toResponseListBasic(roleRepository.findAll());
     }
 
     @Override
@@ -86,8 +85,25 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public PageResponse<RoleResponseDTO> allWithPermissions(Pageable pageable) {
-        return PageMapper.map(roleRepository.findAll(pageable), roleMapper::toResponse);
+    public PageResponse<RoleResponseDTO> allWithPermissions(String name, Pageable pageable) {
+        Page<Long> pageOfIds = roleRepository.findAllIds(name, pageable);
+
+        if (pageOfIds.isEmpty()) {
+            return PageMapper.map(Page.empty(pageable), roleMapper::toResponse);
+        }
+
+        List<RoleEntity> roles = roleRepository.findAllByIdWithPermission(pageOfIds.getContent());
+
+        Map<Long, RoleEntity> mapRoles = roles.stream()
+                .collect(Collectors.toMap(RoleEntity::getId, r -> r));
+
+        List<RoleEntity> rolesOrder = pageOfIds.stream()
+                .map(mapRoles::get)
+                .toList();
+
+        Page<RoleEntity> finalPage = new PageImpl<>(rolesOrder,pageable, pageOfIds.getTotalElements());
+
+        return PageMapper.map(finalPage, roleMapper::toResponseDetail);
     }
 
     @Override

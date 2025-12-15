@@ -19,7 +19,7 @@ public interface UserService {
 
     List<UserResponseDTO> allWithRoles();
 
-    PageResponse<UserResponseDTO> allWithRoles(Pageable pageable);
+    PageResponse<UserResponseDTO> allWithRoles(String username, Pageable pageable);
 
     void delete(Long id);
 }

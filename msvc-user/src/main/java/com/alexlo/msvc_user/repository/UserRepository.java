@@ -22,28 +22,17 @@ public interface  UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u JOIN FETCH u.roles r")
     List<UserEntity> findAllWithRoles();
 
-    @Query("SELECT u.id FROM UserEntity u")
-    Page<Long> findAllIds(Pageable pageable);
+    @Query("""
+       SELECT u.id 
+       FROM UserEntity u 
+       WHERE (:username IS NULL OR :username = '' OR LOWER(u.username) LIKE CONCAT('%', :username, '%'))
+       """)
+    Page<Long> findAllIds(@Param("username") String username, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"roles", "roles.permissions"})
+    @EntityGraph(attributePaths = {"roles"})
     @Query("SELECT u FROM UserEntity u WHERE u.id IN :ids")
     List<UserEntity> findAllByIdInWithRoles(@Param("ids") List<Long> ids);
 
-    /*@EntityGraph(attributePaths = {"roles"})
-    @Override
-    @NonNull
-    Page<UserEntity> findAll(@NonNull Pageable pageable);*/
-
-    /*@EntityGraph(attributePaths = {"roles"}, type = EntityGraph.EntityGraphType.FETCH)
-    Page<UserEntity> findAllBy(Pageable pageable);*/
-
-
-    /*@Query("""
-        SELECT DISTINCT u FROM UserEntity u 
-        LEFT JOIN FETCH u.roles r
-        LEFT JOIN FETCH r.permissions p
-        WHERE u.username = :username
-    """)*/
     @EntityGraph(attributePaths = {"roles", "roles.permissions"})
     Optional<UserEntity> findByUsername(String username);
 }
