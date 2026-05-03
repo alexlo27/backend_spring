@@ -8,9 +8,10 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface RoleMapper {
 
+    @Mapping(target = "permissions", ignore = true)
     RoleEntity toEntity(CreateRoleDTO dto);
 
     @Named("toBasic")
@@ -27,10 +28,6 @@ public interface RoleMapper {
     @IterableMapping(qualifiedByName = "toDetail")
     @Mapping(target = "permissions", ignore = true)
     List<RoleResponseDTO> toResponseListDetail(List<RoleEntity> entities);
-
-    default PermissionEntity map(String permissionName) {
-        return PermissionEntity.builder().name(permissionName).build();
-    }
 
     default String map(PermissionEntity permission) {
         return permission.getName();

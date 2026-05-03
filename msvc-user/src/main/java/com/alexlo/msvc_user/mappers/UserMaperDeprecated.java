@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class UserMaper {
+public class UserMaperDeprecated {
 
     public static UserResponseDTO toDTO(UserEntity user) {
         Set<String> roleNames = user.getRoles()
@@ -27,7 +27,7 @@ public class UserMaper {
 
     public static List<UserResponseDTO> toDTOList(List<UserEntity> users) {
         return users.stream()
-                .map(UserMaper::toDTO)
+                .map(UserMaperDeprecated::toDTO)
                 .collect(Collectors.toList());
     }
 }

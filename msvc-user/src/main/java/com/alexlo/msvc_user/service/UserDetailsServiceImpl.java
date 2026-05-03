@@ -24,14 +24,18 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(">>> Cargando usuario desde UserDetailsService");
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario "+username+" no existe."));
 
-        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
+        /*Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
                 .stream().
                 map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getName())))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet());*/
+        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
+                                                        .stream()
+                                                        .flatMap(role -> role.getPermissions().stream())
+                                                        .map(p -> new SimpleGrantedAuthority(p.getName()))
+                                                        .collect(Collectors.toSet());
 
         return new User(userEntity.getUsername(),
                 userEntity.getPassword(),

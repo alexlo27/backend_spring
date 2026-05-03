@@ -1,9 +1,7 @@
 package com.alexlo.msvc_user.security.filters;
 
-import com.alexlo.msvc_user.model.UserEntity;
+import com.alexlo.msvc_user.dto.request.LoginRequestDTO;
 import com.alexlo.msvc_user.security.jwt.JwtUtils;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
@@ -33,24 +32,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        UserEntity userEntity = null;
-        String username = "";
-        String password = "";
-        System.out.println("xxxx");
+        LoginRequestDTO loginRequest;
+        String username;
+        String password;
         try {
-            userEntity = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
-            username = userEntity.getUsername();
-            password = userEntity.getPassword();
-        } catch (StreamReadException e) {
-            throw new RuntimeException(e);
-        } catch (DatabindException e) {
-            throw new RuntimeException(e);
+            loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDTO.class);
+            username = loginRequest.username();
+            password = loginRequest.password();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BadCredentialsException("Solicitud de login invalida", e);
         }
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        System.out.println(">>>>"+authenticationToken.isAuthenticated());
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -60,19 +52,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        //System.out.println("=>>"+user.getAuthorities());
         String token = jwtUtils.generateAccesToken(user);
-        response.addHeader("Authorization", token);
+        response.setHeader("Authorization", "Bearer " + token);
 
         Map<String, Object> httpResponse = new HashMap<>();
         httpResponse.put("token", token);
         httpResponse.put("username", user.getUsername());
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(httpResponse));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(httpResponse));
         response.getWriter().flush();
+    }
 
-        super.successfulAuthentication(request, response, chain, authResult);
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Unauthorized");
+        body.put("message", "Credenciales incorrectas");
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.getWriter().flush();
     }
 }

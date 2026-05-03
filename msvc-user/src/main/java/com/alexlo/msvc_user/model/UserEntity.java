@@ -25,10 +25,12 @@ public class UserEntity {
     @Email
     @NotBlank
     @Size(max = 80)
+    @Column(unique = true)
     private String email;
 
     @NotBlank
     @Size(max = 30)
+    @Column(unique = true)
     private String username;
 
     @NotBlank
@@ -72,7 +74,6 @@ public class UserEntity {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", isEnabled=" + isEnabled +
                 ", accountNoExpired=" + accountNoExpired +
                 ", accountNoLocked=" + accountNoLocked +

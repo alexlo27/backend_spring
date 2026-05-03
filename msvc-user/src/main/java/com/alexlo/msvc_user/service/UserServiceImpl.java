@@ -5,7 +5,6 @@ import com.alexlo.msvc_user.dto.response.PageResponse;
 import com.alexlo.msvc_user.dto.response.UserResponseDTO;
 import com.alexlo.msvc_user.exception.NotFoundException;
 import com.alexlo.msvc_user.mappers.PageMapper;
-import com.alexlo.msvc_user.mappers.UserMaper;
 import com.alexlo.msvc_user.mappers.UserMapper;
 import com.alexlo.msvc_user.model.RoleEntity;
 import com.alexlo.msvc_user.model.UserEntity;
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService{
         Set<String> roles = Optional.ofNullable(dto.roles()).orElse(Collections.emptySet());
         Set<RoleEntity> rolesEntity = resolveRoles(roles);
 
-        UserEntity userEntity =  UserEntity.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .username(dto.username().toLowerCase())
                 .password(passwordEncoder.encode(dto.password()))
                 .email(dto.email())
@@ -55,12 +54,12 @@ public class UserServiceImpl implements UserService{
     public UserResponseDTO update(CreateUserDTO dto) {
 
         UserEntity userEntity = getUserById(dto.id());
-        Set<String> roles = Optional.ofNullable(dto.roles()).orElse(Collections.emptySet());
-        Set<RoleEntity> rolesEntity = resolveRoles(roles);
         if (dto.email() != null && !dto.email().isBlank()) userEntity.setEmail(dto.email());
         if (dto.password() != null && !dto.password().isBlank()) userEntity.setPassword(passwordEncoder.encode(dto.password()));
         if (dto.isEnabled() != null) userEntity.setIsEnabled(dto.isEnabled());
-        userEntity.setRoles(rolesEntity);
+        if (dto.roles() != null) {
+            userEntity.setRoles(resolveRoles(dto.roles()));
+        }
         //userMapper.updateEntityFromDto(dto, userEntity);
         return userMapper.toResponseDetail(userRepository.save(userEntity));
     }
@@ -86,6 +85,7 @@ public class UserServiceImpl implements UserService{
     public PageResponse<UserResponseDTO> allWithRoles(String username, Pageable pageable) {
         //return PageMapper.map(userRepository.findAllBy(pageable),userMapper::toResponseDetail);
         Page<Long> pageOfIds = userRepository.findAllIds(username, pageable);
+        System.out.println("total:::"+pageOfIds.getTotalPages());
 
         if (pageOfIds.isEmpty()) {
             return PageMapper.map(Page.empty(pageable), userMapper::toResponseDetail);

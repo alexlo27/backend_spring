@@ -1,6 +1,8 @@
 package com.alexlo.msvc_user.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,13 +17,16 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("Data integrity violation", e);
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("type", "https://api.tuservicio.com/errors/data-integrity");
         body.put("title", "Violación de integridad de datos");
         body.put("status", HttpStatus.CONFLICT.value());
-        body.put("detail", e.getMostSpecificCause().getMessage());
+        body.put("detail", "Conflicto de datos");
         body.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
@@ -41,11 +46,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleOtherExceptions(Exception e) {
+        log.error("Unhandled exception", e);
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("type", "https://api.tuservicio.com/errors/internal-server-error");
         body.put("title", "Error interno del servidor");
         body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("detail", e.getMessage());
+        body.put("detail", "Ocurrió un error inesperado");
         body.put("timestamp", LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }

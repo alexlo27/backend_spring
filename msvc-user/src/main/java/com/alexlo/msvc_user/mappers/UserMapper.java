@@ -9,9 +9,10 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring" , uses = {RoleMapper.class})
+@Mapper(componentModel = "spring" , uses = {RoleMapper.class}, builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface UserMapper {
 
+    @Mapping(target = "roles", ignore = true)
     UserEntity toEntity(CreateUserDTO dto);
 
     @Named("toBasic")
@@ -25,12 +26,7 @@ public interface UserMapper {
     List<UserResponseDTO> toResponseListBasic(List<UserEntity> entities);
 
     @IterableMapping(qualifiedByName = "toDetail")
-    @Mapping(target = "roles", ignore = true)
     List<UserResponseDTO> toResponseListDetail(List<UserEntity> entities);
-
-    default RoleEntity map(String roleName) {
-        return RoleEntity.builder().name(roleName).build();
-    }
 
     default String map(RoleEntity role) {
         return role.getName();

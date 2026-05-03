@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/withRoles")
+    @PreAuthorize("hasAuthority('USER_READ')")
     public ResponseEntity<List<UserResponseDTO>> allUserWithRoles(){
         return ResponseEntity.ok(userService.allWithRoles());
     }

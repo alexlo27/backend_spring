@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>4.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.alexlo</groupId>
@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>msvc-user</module>
+        <module>msvc-employee</module>
     </modules>
 
     <properties>
