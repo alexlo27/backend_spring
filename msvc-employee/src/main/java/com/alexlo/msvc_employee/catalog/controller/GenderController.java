@@ -36,8 +36,8 @@ public class GenderController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<GenderResponseDTO>> all(Pageable pageable){
-        return ResponseEntity.ok(genderService.all(pageable));
+    public ResponseEntity<PageResponse<GenderResponseDTO>> all(@RequestParam(required = false) String name, Pageable pageable){
+        return ResponseEntity.ok(genderService.all(name, pageable));
     }
 
 

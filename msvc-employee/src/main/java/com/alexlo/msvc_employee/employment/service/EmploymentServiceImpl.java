@@ -80,8 +80,19 @@ public class EmploymentServiceImpl implements EmploymentService{
     }
 
     @Override
+    public List<EmploymentResponseDTO> findByEmployeeId(Long id) {
+        return employmentMapper.toResponseList(employmentRepository.findByEmployeeId(id));
+    }
+
+    @Override
     public PageResponse<EmploymentResponseDTO> all(Pageable pageable) {
         Page<EmploymentEntity> result = employmentRepository.findAll(pageable);
+        return PageMapper.map(result, employmentMapper::toResponse);
+    }
+
+    @Override
+    public PageResponse<EmploymentResponseDTO> findByEmployeeId(Long id, Pageable pageable) {
+        Page<EmploymentEntity> result = employmentRepository.findByEmployeeId(id, pageable);
         return PageMapper.map(result, employmentMapper::toResponse);
     }
 

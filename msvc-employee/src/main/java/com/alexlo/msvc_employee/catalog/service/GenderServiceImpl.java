@@ -55,8 +55,8 @@ public class GenderServiceImpl implements GenderService{
 
     @Transactional(readOnly = true)
     @Override
-    public PageResponse<GenderResponseDTO> all(Pageable pageable) {
-        Page<GenderEntity> result = genderRepository.findAll(pageable);
+    public PageResponse<GenderResponseDTO> all(String name, Pageable pageable) {
+        Page<GenderEntity> result = genderRepository.findByNameContainingIgnoreCase(name, pageable);
         return PageMapper.map(result, genderMapper::toResponse);
     }
 

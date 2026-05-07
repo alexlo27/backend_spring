@@ -45,6 +45,16 @@ public class EmploymentController {
         return ResponseEntity.ok(employmentService.findById(id));
     }
 
+    @GetMapping("/employee/{id}/all")
+    public ResponseEntity<List<EmploymentResponseDTO>> employeeById(@PathVariable Long id){
+        return ResponseEntity.ok(employmentService.findByEmployeeId(id));
+    }
+
+    @GetMapping("/employee/{id}")
+    public ResponseEntity<PageResponse<EmploymentResponseDTO>> employeeById(@PathVariable Long id, Pageable pageable){
+        return ResponseEntity.ok(employmentService.findByEmployeeId(id, pageable));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         employmentService.delete(id);

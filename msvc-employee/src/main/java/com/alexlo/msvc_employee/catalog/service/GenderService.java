@@ -16,7 +16,7 @@ public interface GenderService {
 
     List<GenderResponseDTO> all();
 
-    PageResponse<GenderResponseDTO> all(Pageable pageable);
+    PageResponse<GenderResponseDTO> all(String name, Pageable pageable);
 
     GenderResponseDTO findById(Long id);
 

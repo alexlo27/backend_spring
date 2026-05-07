@@ -1,7 +1,11 @@
 package com.alexlo.msvc_employee.employee.repository;
 
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
 
@@ -9,4 +13,12 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
     boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
     boolean existsByDocumentNumberIgnoreCase(String documentNumber);
     boolean existsByDocumentNumberIgnoreCaseAndIdNot(String documentNumber, Long id);
+    //Page<EmployeeEntity> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    @Query("""
+    SELECT e FROM EmployeeEntity e
+    WHERE LOWER(CONCAT(e.name, ' ', e.lastName)) 
+          LIKE LOWER(CONCAT('%', :name, '%'))
+""")
+    Page<EmployeeEntity> search(@Param("name") String name, Pageable pageable);
 }

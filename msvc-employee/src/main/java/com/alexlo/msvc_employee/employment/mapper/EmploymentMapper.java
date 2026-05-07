@@ -21,7 +21,9 @@ public interface EmploymentMapper {
     @Mapping(target = "employeeName", source = "employee.name")
     @Mapping(target = "employeeId", source = "employee.id")
     @Mapping(target = "departmentName", source = "department.name")
+    @Mapping(target = "departmentId", source = "department.id")
     @Mapping(target = "positionName", source = "position.name")
+    @Mapping(target = "positionId", source = "position.id")
     EmploymentResponseDTO toResponse(EmploymentEntity entity);
 
     List<EmploymentResponseDTO> toResponseList(Iterable<EmploymentEntity> entities);

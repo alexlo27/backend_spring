@@ -31,8 +31,8 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<EmployeeResponseDTO>> all(Pageable pageable){
-        return ResponseEntity.ok(employeeService.all(pageable));
+    public ResponseEntity<PageResponse<EmployeeResponseDTO>> all(@RequestParam(required = false) String name, Pageable pageable){
+        return ResponseEntity.ok(employeeService.all(name, pageable));
     }
 
     @GetMapping("/all")

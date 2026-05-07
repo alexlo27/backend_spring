@@ -17,7 +17,7 @@ public interface EmployeeService {
 
     List<EmployeeResponseDTO> all();
 
-    PageResponse<EmployeeResponseDTO> all(Pageable pageable);
+    PageResponse<EmployeeResponseDTO> all(String name, Pageable pageable);
 
     void delete(Long id);
 

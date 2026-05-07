@@ -18,7 +18,11 @@ public interface EmploymentService {
 
     List<EmploymentResponseDTO> all();
 
+    List<EmploymentResponseDTO> findByEmployeeId(Long id);
+
     PageResponse<EmploymentResponseDTO> all(Pageable pageable);
+
+    PageResponse<EmploymentResponseDTO> findByEmployeeId(Long id, Pageable pageable);
 
     void delete(Long id);
 
