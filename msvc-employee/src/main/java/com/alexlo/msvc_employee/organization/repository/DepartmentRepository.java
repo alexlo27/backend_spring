@@ -3,7 +3,9 @@ package com.alexlo.msvc_employee.organization.repository;
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -17,5 +19,12 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
     Page<DepartmentEntity> findByParentIsNull(Pageable pageable);
 
+    @EntityGraph(attributePaths = "children")
     List<DepartmentEntity> findByParentIsNull();
+
+    @EntityGraph(attributePaths = "parent")
+    Page<DepartmentEntity> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = "parent")
+    List<DepartmentEntity> findAll();
 }

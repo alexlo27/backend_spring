@@ -3,6 +3,7 @@ package com.alexlo.msvc_employee.organization.service;
 import com.alexlo.msvc_employee.organization.dto.request.CreateDepartmentRequestDTO;
 import com.alexlo.msvc_employee.organization.dto.request.UpdateDepartmentRequestDTO;
 import com.alexlo.msvc_employee.organization.dto.response.DepartmentResponseDTO;
+import com.alexlo.msvc_employee.organization.dto.response.DepartmentWithParentResponseDTO;
 import com.alexlo.msvc_employee.organization.maper.DepartmentMapper;
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import com.alexlo.msvc_employee.organization.repository.DepartmentRepository;
@@ -11,7 +12,6 @@ import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -83,6 +83,33 @@ public class DepartmentServiceImpl implements DepartmentService{
     public void delete(Long id) {
         getDepartmentById(id);
         departmentRepository.deleteById(id);
+    }
+
+    /*@Transactional(readOnly = true)
+    @Override
+    public List<DepartmentWithParentAndChildrenResponseDTO> allWithParentAndChildren() {
+        return departmentMapper.toResponseWithParentAndChildrenList(
+                departmentRepository.fetchDepartmentsWithParentAndChildren()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<DepartmentWithParentAndChildrenResponseDTO> allWithParentAndChildren(Pageable pageable) {
+        Page<DepartmentEntity> result = departmentRepository.fetchDepartmentsWithParentAndChildren(pageable);
+        return PageMapper.map(result, departmentMapper::toResponseWithParentAndChildren);
+    }*/
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<DepartmentWithParentResponseDTO> allWithParent(Pageable pageable) {
+        Page<DepartmentEntity> result = departmentRepository.findAll(pageable);
+        return PageMapper.map(result, departmentMapper::toResponseWithParent);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DepartmentWithParentResponseDTO> allWithParent() {
+        return departmentMapper.toResponseWithParentList(departmentRepository.findAll());
     }
 
     private DepartmentEntity getDepartmentById(Long id){

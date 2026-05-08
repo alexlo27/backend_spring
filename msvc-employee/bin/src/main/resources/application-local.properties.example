@@ -1,0 +1,12 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/msvc_user
+spring.datasource.username=postgres
+spring.datasource.password=changeme
+
+# JWT secret in BASE64 (recommended) or HEX
+jwt.secret.key=changeme
+jwt.time.expiration=86400000
+jwt.issuer=msvc-user
+jwt.audience=msvc-user-api
+
+# CORS (comma-separated)
+app.cors.allowed-origins=http://localhost:4200

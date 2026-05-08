@@ -4,14 +4,12 @@ import com.alexlo.msvc_employee.organization.dto.request.CreateDepartmentRequest
 import com.alexlo.msvc_employee.organization.dto.request.UpdateDepartmentRequestDTO;
 import com.alexlo.msvc_employee.organization.dto.response.DepartmentResponseDTO;
 import com.alexlo.msvc_employee.organization.service.DepartmentService;
-import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/department")
@@ -31,12 +29,19 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<DepartmentResponseDTO>> all(Pageable pageable){
+    public ResponseEntity<?> all(Pageable pageable,
+                                 @RequestParam(defaultValue = "false") boolean includeParent) {
+        if (includeParent) {
+            return ResponseEntity.ok(departmentService.allWithParent(pageable));
+        }
         return ResponseEntity.ok(departmentService.all(pageable));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<DepartmentResponseDTO>> all(){
+    public ResponseEntity<?> all(@RequestParam(defaultValue = "false") boolean includeParent) {
+        if (includeParent) {
+            return ResponseEntity.ok(departmentService.allWithParent());
+        }
         return ResponseEntity.ok(departmentService.all());
     }
 

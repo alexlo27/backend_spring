@@ -8,7 +8,7 @@ public record DepartmentResponseDTO(
         String code,
         String description,
         Long parentId,
-        List<DepartmentChildDTO> children,
-        Boolean isActive
+        Boolean isActive,
+        List<DepartmentResponseDTO> children
 ) {
 }
