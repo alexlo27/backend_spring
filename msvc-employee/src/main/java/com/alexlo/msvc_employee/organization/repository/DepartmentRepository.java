@@ -17,9 +17,10 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
     boolean existsByCodeIgnoreCase(String code);
     boolean existsByCodeIgnoreCaseAndIdNot(String code, Long id);
 
+    @EntityGraph(attributePaths = "parent")
     Page<DepartmentEntity> findByParentIsNull(Pageable pageable);
 
-    @EntityGraph(attributePaths = "children")
+    @EntityGraph(attributePaths = {"children"/*,"parent"*/})
     List<DepartmentEntity> findByParentIsNull();
 
     @EntityGraph(attributePaths = "parent")

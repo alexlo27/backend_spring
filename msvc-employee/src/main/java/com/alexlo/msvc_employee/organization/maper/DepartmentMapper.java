@@ -22,8 +22,10 @@ public interface DepartmentMapper {
     DepartmentEntity toEntity(CreateDepartmentRequestDTO dto);
 
     @Mapping(target = "parentId", source = "parent.id")
+    //@Mapping(target = "parent", source = "parent")
     DepartmentResponseDTO toResponse(DepartmentEntity department);
 
+    //@Mapping(target = "parent", source = "parent")
     List<DepartmentResponseDTO> toResponseList(Iterable<DepartmentEntity> entities);
 
     @BeanMapping(
@@ -40,8 +42,8 @@ public interface DepartmentMapper {
     List<DepartmentWithParentResponseDTO> toResponseWithParentList(Iterable<DepartmentEntity> entities);
 
     // MapStruct usará este método para mapear el padre
-    default DepartmentParentDTO mapParent(DepartmentEntity parent) {
+    /*default DepartmentParentDTO mapParent(DepartmentEntity parent) {
         if (parent == null) return null;
         return new DepartmentParentDTO(parent.getId(), parent.getName(), parent.getCode());
-    }
+    }*/
 }

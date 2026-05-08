@@ -9,6 +9,7 @@ public record DepartmentResponseDTO(
         String description,
         Long parentId,
         Boolean isActive,
+        DepartmentParentDTO parent,
         List<DepartmentResponseDTO> children
 ) {
 }
