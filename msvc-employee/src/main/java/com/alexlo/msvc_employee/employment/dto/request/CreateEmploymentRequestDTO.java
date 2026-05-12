@@ -9,6 +9,8 @@ public record CreateEmploymentRequestDTO(
         @NotNull Long employeeId,
         @NotNull  Long departmentId,
         @NotNull Long positionId,
+        @NotNull Long employeeTypeId,
+        @NotNull Long contractTypeId,
         @NotNull LocalDate startDate,
         LocalDate endDate,
         BigDecimal salary,

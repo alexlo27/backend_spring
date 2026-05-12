@@ -1,5 +1,7 @@
 package com.alexlo.msvc_employee.employment.model;
 
+import com.alexlo.msvc_employee.catalog.model.ContractTypeEntity;
+import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import com.alexlo.msvc_employee.organization.model.PositionEntity;
@@ -34,6 +36,14 @@ public class EmploymentEntity extends Auditable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "position_id", nullable = false)
     private PositionEntity position;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "employee_type_id", nullable = true)
+    private EmployeeTypeEntity employeeType;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "contract_type_id", nullable = true)
+    private ContractTypeEntity contractType;
 
     private LocalDate startDate;
     private LocalDate endDate;

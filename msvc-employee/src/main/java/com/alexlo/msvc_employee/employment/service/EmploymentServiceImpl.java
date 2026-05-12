@@ -1,5 +1,8 @@
 package com.alexlo.msvc_employee.employment.service;
 
+import com.alexlo.msvc_employee.catalog.model.ContractTypeEntity;
+import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
+import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.employee.mapper.EmployeeMapper;
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
 import com.alexlo.msvc_employee.employee.validator.EmployeeLookupService;
@@ -31,6 +34,7 @@ public class EmploymentServiceImpl implements EmploymentService{
     private final OrganizationLookupService organizationLookupService;
     private final EmployeeLookupService employeeLookupService;
     private final EmploymentLookupService employmentLookupService;
+    private final CatalogLookupService catalogLookupService;
 
     @Override
     public EmploymentResponseDTO create(CreateEmploymentRequestDTO dto) {
@@ -39,9 +43,13 @@ public class EmploymentServiceImpl implements EmploymentService{
         EmployeeEntity employee = employeeLookupService.getEmployeeById(dto.employeeId());
         DepartmentEntity department = organizationLookupService.getDepartmentById(dto.departmentId());
         PositionEntity position = organizationLookupService.getPositionById(dto.positionId());
+        EmployeeTypeEntity employeeType = catalogLookupService.getEmployeeTypeById(dto.employeeTypeId());
+        ContractTypeEntity contractType = catalogLookupService.getContractTypeById(dto.contractTypeId());
         employment.setEmployee(employee);
         employment.setDepartment(department);
         employment.setPosition(position);
+        employment.setContractType(contractType);
+        employment.setEmployeeType(employeeType);
 
         return employmentMapper.toResponse(employmentRepository.save(employment));
     }
@@ -64,6 +72,16 @@ public class EmploymentServiceImpl implements EmploymentService{
         if (dto.positionId() != null){
             PositionEntity position = organizationLookupService.getPositionById(dto.positionId());
             employment.setPosition(position);
+        }
+
+        if(dto.employeeTypeId() != null){
+            EmployeeTypeEntity employeeType = catalogLookupService.getEmployeeTypeById(dto.employeeTypeId());
+            employment.setEmployeeType(employeeType);
+        }
+
+        if(dto.contractTypeId() != null){
+            ContractTypeEntity contractType = catalogLookupService.getContractTypeById(dto.contractTypeId());
+            employment.setContractType(contractType);
         }
 
         return employmentMapper.toResponse( employmentRepository.save(employment));

@@ -7,6 +7,7 @@ import com.alexlo.msvc_employee.catalog.dto.response.DocumentTypeResponseDTO;
 import com.alexlo.msvc_employee.catalog.maper.DocumentTypeMapper;
 import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
 import com.alexlo.msvc_employee.catalog.repository.DocumentTypeRepository;
+import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.shared.exception.DuplicateResourceException;
 import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
@@ -28,6 +29,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Autowired
     DocumentTypeMapper documentTypeMapper;
 
+    @Autowired
+    CatalogLookupService catalogLookupService;
+
     @Transactional
     @Override
     public DocumentTypeResponseDTO create(CreateDocumentTypeRequestDTO dto) {
@@ -40,7 +44,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Transactional
     @Override
     public DocumentTypeResponseDTO update(UpdateDocumentTypeRequestDTO dto) {
-        DocumentTypeEntity documentType = getDocumentTypeById(dto.id());
+        DocumentTypeEntity documentType = catalogLookupService.getDocumentTypeById(dto.id());
         documentTypeMapper.updateEntityFromDto(dto, documentType);
         return documentTypeMapper.toResponse(documentTypeRepository.save(documentType));
     }
@@ -61,18 +65,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Transactional(readOnly = true)
     @Override
     public DocumentTypeResponseDTO findById(Long id) {
-        return documentTypeMapper.toResponse(getDocumentTypeById(id));
+        return documentTypeMapper.toResponse(catalogLookupService.getDocumentTypeById(id));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        getDocumentTypeById(id);
+        catalogLookupService.getDocumentTypeById(id);
         documentTypeRepository.deleteById(id);
     }
 
-    private DocumentTypeEntity getDocumentTypeById(Long id){
-        return documentTypeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Tipo documento no encontrado"));
-    }
 }

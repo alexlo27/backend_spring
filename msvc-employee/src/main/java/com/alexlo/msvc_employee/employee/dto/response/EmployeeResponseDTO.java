@@ -13,6 +13,7 @@ public record EmployeeResponseDTO(
         String phone,
         String address,
         String gender,
+        String maritalStatus,
         Boolean isActive
 ) {
 }

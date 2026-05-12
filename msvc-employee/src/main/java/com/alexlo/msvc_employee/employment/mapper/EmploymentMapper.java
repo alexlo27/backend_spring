@@ -16,6 +16,8 @@ public interface EmploymentMapper {
     @Mapping(target = "employee", ignore = true)
     @Mapping(target = "department", ignore = true)
     @Mapping(target = "position", ignore = true)
+    @Mapping(target = "employeeType", ignore = true)
+    @Mapping(target = "contractType", ignore = true)
     EmploymentEntity toEntity(CreateEmploymentRequestDTO dto);
 
     @Mapping(target = "employeeName", source = "employee.name")
@@ -24,6 +26,10 @@ public interface EmploymentMapper {
     @Mapping(target = "departmentId", source = "department.id")
     @Mapping(target = "positionName", source = "position.name")
     @Mapping(target = "positionId", source = "position.id")
+    @Mapping(target = "employeeTypeName", source = "employeeType.name")
+    @Mapping(target = "employeeTypeId", source = "employeeType.id")
+    @Mapping(target = "contractTypeName", source = "contractType.name")
+    @Mapping(target = "contractTypeId", source = "contractType.id")
     EmploymentResponseDTO toResponse(EmploymentEntity entity);
 
     List<EmploymentResponseDTO> toResponseList(Iterable<EmploymentEntity> entities);

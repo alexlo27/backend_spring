@@ -15,6 +15,7 @@ public record UpdateEmployeeDTO(
         @Email String email,
         String phone,
         String address,
-        String gender
+        String gender,
+        String maritalStatus
 ) {
 }

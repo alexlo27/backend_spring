@@ -19,6 +19,7 @@ public record CreateEmployeeDTO(
         String phone,
         String address,
         @NotBlank String gender,
+        @NotBlank String maritalStatus,
 
         // ===== Datos laborales =====
         @NotNull(message = "El departamento es obligatorio")

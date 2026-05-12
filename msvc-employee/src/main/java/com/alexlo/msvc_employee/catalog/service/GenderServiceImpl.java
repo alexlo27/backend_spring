@@ -6,6 +6,7 @@ import com.alexlo.msvc_employee.catalog.dto.response.GenderResponseDTO;
 import com.alexlo.msvc_employee.catalog.maper.GenderMapper;
 import com.alexlo.msvc_employee.catalog.model.GenderEntity;
 import com.alexlo.msvc_employee.catalog.repository.GenderRepository;
+import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.shared.exception.DuplicateResourceException;
 import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
@@ -27,6 +28,9 @@ public class GenderServiceImpl implements GenderService{
     @Autowired
     GenderRepository genderRepository;
 
+    @Autowired
+    CatalogLookupService catalogLookupService;
+
     @Transactional
     @Override
     public GenderResponseDTO create(CreateGenderRequestDTO dto) {
@@ -42,7 +46,7 @@ public class GenderServiceImpl implements GenderService{
         if (genderRepository.existsByCodeIgnoreCaseAndIdNot(dto.code(), dto.id())) {
             throw new DuplicateResourceException("El código ya existe", "code");
         }
-        GenderEntity gender= getGenderById(dto.id());
+        GenderEntity gender= catalogLookupService.getGenderById(dto.id());
         genderMapper.updateEntityFromDto(dto, gender);
         return genderMapper.toResponse(genderRepository.save(gender));
     }
@@ -63,18 +67,14 @@ public class GenderServiceImpl implements GenderService{
     @Transactional(readOnly = true)
     @Override
     public GenderResponseDTO findById(Long id) {
-        return genderMapper.toResponse(getGenderById(id));
+        return genderMapper.toResponse(catalogLookupService.getGenderById(id));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        getGenderById(id);
+        catalogLookupService.getGenderById(id);
         genderRepository.deleteById(id);
     }
 
-    private GenderEntity getGenderById(Long id){
-        return genderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Genero no encontrado"));
-    }
 }

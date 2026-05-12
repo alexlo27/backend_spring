@@ -1,9 +1,7 @@
 package com.alexlo.msvc_employee.catalog.validator;
 
-import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
-import com.alexlo.msvc_employee.catalog.model.GenderEntity;
-import com.alexlo.msvc_employee.catalog.repository.DocumentTypeRepository;
-import com.alexlo.msvc_employee.catalog.repository.GenderRepository;
+import com.alexlo.msvc_employee.catalog.model.*;
+import com.alexlo.msvc_employee.catalog.repository.*;
 import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +12,9 @@ public class CatalogLookupService {
 
     private final GenderRepository genderRepository;
     private final DocumentTypeRepository documentTypeRepository;
+    private final MaritalStatusRepository maritalStatusRepository;
+    private final EmployeeTypeRepository employeeTypeRepository;
+    private final ContractTypeRepository contractTypeRepository;
 
     public void existGender(String code){
         if(!genderRepository.existsByCodeIgnoreCase(code)){
@@ -43,9 +44,42 @@ public class CatalogLookupService {
                 .orElseThrow(() -> new NotFoundException("Tipo Documento no encontrado"));
     }
 
+    public DocumentTypeEntity getDocumentTypeById(Long id){
+        return documentTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo Documento no encontrado"));
+    }
+
     public GenderEntity getGender(String code){
         return genderRepository.findByCodeIgnoreCase(code)
                 .orElseThrow(() -> new NotFoundException("Género no encontrado"));
     }
+
+    public GenderEntity getGenderById(Long id){
+        return genderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Género no encontrado"));
+    }
+
+    public MaritalStatusEntity getMaritalStatus(String code){
+        return maritalStatusRepository.findByCodeIgnoreCase(code)
+                .orElseThrow(() -> new NotFoundException("Estado civil no encontrado"));
+    }
+
+    public MaritalStatusEntity getMaritalStatusById(Long id){
+        return maritalStatusRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Estado civil no encontrado"));
+    }
+
+    public EmployeeTypeEntity getEmployeeTypeById(Long id){
+        return employeeTypeRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("No existe tipo empleado"));
+    }
+
+    public ContractTypeEntity getContractTypeById(Long id){
+        return contractTypeRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("No existe tipo contrato"));
+    }
+
+
+
 
 }

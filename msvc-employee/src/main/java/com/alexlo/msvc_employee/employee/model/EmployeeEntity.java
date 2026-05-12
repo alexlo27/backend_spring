@@ -2,6 +2,7 @@ package com.alexlo.msvc_employee.employee.model;
 
 import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
 import com.alexlo.msvc_employee.catalog.model.GenderEntity;
+import com.alexlo.msvc_employee.catalog.model.MaritalStatusEntity;
 import com.alexlo.msvc_employee.shared.audit.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -57,6 +58,10 @@ public class EmployeeEntity  extends Auditable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "gender_id", nullable = false)
     private GenderEntity gender;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "marital_status_id", nullable = false)
+    private MaritalStatusEntity maritalStatus;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

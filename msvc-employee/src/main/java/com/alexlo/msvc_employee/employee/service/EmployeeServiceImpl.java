@@ -2,6 +2,7 @@ package com.alexlo.msvc_employee.employee.service;
 
 import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
 import com.alexlo.msvc_employee.catalog.model.GenderEntity;
+import com.alexlo.msvc_employee.catalog.model.MaritalStatusEntity;
 import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.employee.dto.request.CreateEmployeeDTO;
 import com.alexlo.msvc_employee.employee.dto.request.UpdateEmployeeDTO;
@@ -59,8 +60,11 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         GenderEntity gender = catalogLookupService.getGender(dto.gender());
 
+        MaritalStatusEntity maritalStatus = catalogLookupService.getMaritalStatus(dto.maritalStatus());
+
         employee.setDocumentType(documentType);
         employee.setGender(gender);
+        employee.setMaritalStatus(maritalStatus);
 
         EmployeeEntity saved = employeeRepository.save(employee);
 
@@ -85,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         EmployeeEntity employee = employeeLookupService.getEmployeeById(dto.id());
         employeeMapper.updateEntityFromDto(dto, employee);
-        System.out.println(employee);
+
         if (dto.documentType() != null){
             DocumentTypeEntity documentType = catalogLookupService.getDocumentType(dto.documentType());
             employee.setDocumentType(documentType);
@@ -94,6 +98,11 @@ public class EmployeeServiceImpl implements EmployeeService{
         if (dto.gender() != null){
             GenderEntity gender = catalogLookupService.getGender(dto.gender());
             employee.setGender(gender);
+        }
+
+        if (dto.maritalStatus() != null){
+            MaritalStatusEntity maritalStatus = catalogLookupService.getMaritalStatus(dto.maritalStatus());
+            employee.setMaritalStatus(maritalStatus);
         }
 
         EmployeeEntity saved = employeeRepository.save(employee);

@@ -10,6 +10,8 @@ public record UpdateEmploymentRequestDTO(
         Long employeeId,
         Long departmentId,
         Long positionId,
+        Long employeeTypeId,
+        Long contractTypeId,
         LocalDate startDate,
         LocalDate endDate,
         BigDecimal salary,
