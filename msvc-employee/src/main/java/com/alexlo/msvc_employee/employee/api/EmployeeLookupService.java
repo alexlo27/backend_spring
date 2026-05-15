@@ -1,4 +1,4 @@
-package com.alexlo.msvc_employee.employee.validator;
+package com.alexlo.msvc_employee.employee.api;
 
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
 import com.alexlo.msvc_employee.employee.repository.EmployeeRepository;

@@ -1,7 +1,7 @@
 package com.alexlo.msvc_employee.employment.model;
 
-import com.alexlo.msvc_employee.catalog.model.ContractTypeEntity;
-import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
+import com.alexlo.msvc_employee.employment.model.ContractTypeEntity;
+import com.alexlo.msvc_employee.employment.model.EmployeeTypeEntity;
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import com.alexlo.msvc_employee.organization.model.PositionEntity;

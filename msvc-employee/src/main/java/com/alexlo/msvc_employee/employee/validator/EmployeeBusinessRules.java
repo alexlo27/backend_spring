@@ -1,6 +1,5 @@
 package com.alexlo.msvc_employee.employee.validator;
 
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.employee.dto.request.CreateEmployeeDTO;
 import com.alexlo.msvc_employee.employee.dto.request.UpdateEmployeeDTO;
 import com.alexlo.msvc_employee.employee.repository.EmployeeRepository;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmployeeBusinessRules {
 
-    private final CatalogLookupService catalogLookupService;
     private final EmployeeRepository employeeRepository;
 
     public void createEmployee(CreateEmployeeDTO dto){

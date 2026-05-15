@@ -1,13 +1,13 @@
-package com.alexlo.msvc_employee.catalog.service;
+package com.alexlo.msvc_employee.employment.service;
 
-import com.alexlo.msvc_employee.catalog.dto.request.CreateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.request.UpdateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.response.EmployeeTypeResponseDTO;
-import com.alexlo.msvc_employee.catalog.maper.EmployeeTypeMapper;
-import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
-import com.alexlo.msvc_employee.catalog.repository.EmployeeTypeRepository;
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
+import com.alexlo.msvc_employee.employment.dto.request.CreateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.request.UpdateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.response.EmployeeTypeResponseDTO;
+import com.alexlo.msvc_employee.employment.mapper.EmployeeTypeMapper;
+import com.alexlo.msvc_employee.employment.model.EmployeeTypeEntity;
+import com.alexlo.msvc_employee.employment.repository.EmployeeTypeRepository;
 import com.alexlo.msvc_employee.shared.exception.DuplicateResourceException;
+import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,6 @@ public class EmployeeTypeServiceImpl implements EmployeeTypeService{
     @Autowired
     EmployeeTypeRepository employeeTypeRepository;
 
-    @Autowired
-    CatalogLookupService catalogLookupService;
-
     @Transactional
     @Override
     public EmployeeTypeResponseDTO create(CreateEmployeeTypeRequestDTO dto) {
@@ -45,7 +42,7 @@ public class EmployeeTypeServiceImpl implements EmployeeTypeService{
         if (employeeTypeRepository.existsByCodeIgnoreCaseAndIdNot(dto.code(), dto.id())) {
             throw new DuplicateResourceException("El código ya existe", "code");
         }
-        EmployeeTypeEntity employeeType= catalogLookupService.getEmployeeTypeById(dto.id());
+        EmployeeTypeEntity employeeType= getEmployeeTypeById(dto.id());
         employeeTypeMapper.updateEntityFromDto(dto, employeeType);
         return employeeTypeMapper.toResponse(employeeTypeRepository.save(employeeType));
     }
@@ -66,15 +63,19 @@ public class EmployeeTypeServiceImpl implements EmployeeTypeService{
     @Transactional(readOnly = true)
     @Override
     public EmployeeTypeResponseDTO findById(Long id) {
-        return employeeTypeMapper.toResponse(catalogLookupService.getEmployeeTypeById(id));
+        return employeeTypeMapper.toResponse(getEmployeeTypeById(id));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        catalogLookupService.getEmployeeTypeById(id);
+        getEmployeeTypeById(id);
         employeeTypeRepository.deleteById(id);
     }
 
+    private EmployeeTypeEntity getEmployeeTypeById(Long id){
+        return employeeTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de empleado no encontrado"));
+    }
 
 }

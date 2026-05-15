@@ -1,21 +1,21 @@
 package com.alexlo.msvc_employee.employment.service;
 
-import com.alexlo.msvc_employee.catalog.model.ContractTypeEntity;
-import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
-import com.alexlo.msvc_employee.employee.mapper.EmployeeMapper;
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
-import com.alexlo.msvc_employee.employee.validator.EmployeeLookupService;
+import com.alexlo.msvc_employee.employee.api.EmployeeLookupService;
 import com.alexlo.msvc_employee.employment.dto.request.CreateEmploymentRequestDTO;
 import com.alexlo.msvc_employee.employment.dto.request.UpdateEmploymentRequestDTO;
 import com.alexlo.msvc_employee.employment.dto.response.EmploymentResponseDTO;
 import com.alexlo.msvc_employee.employment.mapper.EmploymentMapper;
+import com.alexlo.msvc_employee.employment.model.ContractTypeEntity;
+import com.alexlo.msvc_employee.employment.model.EmployeeTypeEntity;
 import com.alexlo.msvc_employee.employment.model.EmploymentEntity;
+import com.alexlo.msvc_employee.employment.repository.ContractTypeRepository;
+import com.alexlo.msvc_employee.employment.repository.EmployeeTypeRepository;
 import com.alexlo.msvc_employee.employment.repository.EmploymentRepository;
-import com.alexlo.msvc_employee.employment.validator.EmploymentLookupService;
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import com.alexlo.msvc_employee.organization.model.PositionEntity;
-import com.alexlo.msvc_employee.organization.validator.OrganizationLookupService;
+import com.alexlo.msvc_employee.organization.api.OrganizationLookupService;
+import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ public class EmploymentServiceImpl implements EmploymentService{
     private final EmploymentMapper employmentMapper;
     private final OrganizationLookupService organizationLookupService;
     private final EmployeeLookupService employeeLookupService;
-    private final EmploymentLookupService employmentLookupService;
-    private final CatalogLookupService catalogLookupService;
+    private final EmployeeTypeRepository employeeTypeRepository;
+    private final ContractTypeRepository contractTypeRepository;
 
     @Override
     public EmploymentResponseDTO create(CreateEmploymentRequestDTO dto) {
@@ -43,8 +43,8 @@ public class EmploymentServiceImpl implements EmploymentService{
         EmployeeEntity employee = employeeLookupService.getEmployeeById(dto.employeeId());
         DepartmentEntity department = organizationLookupService.getDepartmentById(dto.departmentId());
         PositionEntity position = organizationLookupService.getPositionById(dto.positionId());
-        EmployeeTypeEntity employeeType = catalogLookupService.getEmployeeTypeById(dto.employeeTypeId());
-        ContractTypeEntity contractType = catalogLookupService.getContractTypeById(dto.contractTypeId());
+        EmployeeTypeEntity employeeType = getEmployeeTypeById(dto.employeeTypeId());
+        ContractTypeEntity contractType = getContractTypeById(dto.contractTypeId());
         employment.setEmployee(employee);
         employment.setDepartment(department);
         employment.setPosition(position);
@@ -56,7 +56,7 @@ public class EmploymentServiceImpl implements EmploymentService{
 
     @Override
     public EmploymentResponseDTO update(UpdateEmploymentRequestDTO dto) {
-        EmploymentEntity employment = employmentLookupService.getEmploymentById(dto.id());
+        EmploymentEntity employment = getEmploymentById(dto.id());
         employmentMapper.updateEntityFromDto(dto, employment);
 
         if (dto.employeeId() != null){
@@ -75,12 +75,12 @@ public class EmploymentServiceImpl implements EmploymentService{
         }
 
         if(dto.employeeTypeId() != null){
-            EmployeeTypeEntity employeeType = catalogLookupService.getEmployeeTypeById(dto.employeeTypeId());
+            EmployeeTypeEntity employeeType = getEmployeeTypeById(dto.employeeTypeId());
             employment.setEmployeeType(employeeType);
         }
 
         if(dto.contractTypeId() != null){
-            ContractTypeEntity contractType = catalogLookupService.getContractTypeById(dto.contractTypeId());
+            ContractTypeEntity contractType = getContractTypeById(dto.contractTypeId());
             employment.setContractType(contractType);
         }
 
@@ -89,7 +89,7 @@ public class EmploymentServiceImpl implements EmploymentService{
 
     @Override
     public EmploymentResponseDTO findById(Long id) {
-        return employmentMapper.toResponse(employmentLookupService.getEmploymentById(id));
+        return employmentMapper.toResponse(getEmploymentById(id));
     }
 
     @Override
@@ -116,7 +116,22 @@ public class EmploymentServiceImpl implements EmploymentService{
 
     @Override
     public void delete(Long id) {
-        employmentLookupService.getEmploymentById(id);
+        getEmploymentById(id);
         employmentRepository.deleteById(id);
+    }
+
+    public EmployeeTypeEntity getEmployeeTypeById(Long id){
+        return employeeTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de empleado no encontrado"));
+    }
+
+    public ContractTypeEntity getContractTypeById(Long id){
+        return contractTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de contrato no encontrado"));
+    }
+
+    public EmploymentEntity getEmploymentById(Long id){
+        return employmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Empleo no encontrado"));
     }
 }

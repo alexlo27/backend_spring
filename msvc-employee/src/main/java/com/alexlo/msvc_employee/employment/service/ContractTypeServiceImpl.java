@@ -1,13 +1,13 @@
-package com.alexlo.msvc_employee.catalog.service;
+package com.alexlo.msvc_employee.employment.service;
 
-import com.alexlo.msvc_employee.catalog.dto.request.CreateContractTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.request.UpdateContractTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.response.ContractTypeResponseDTO;
-import com.alexlo.msvc_employee.catalog.maper.ContractTypeMapper;
-import com.alexlo.msvc_employee.catalog.model.ContractTypeEntity;
-import com.alexlo.msvc_employee.catalog.repository.ContractTypeRepository;
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
+import com.alexlo.msvc_employee.employment.dto.request.CreateContractTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.request.UpdateContractTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.response.ContractTypeResponseDTO;
+import com.alexlo.msvc_employee.employment.mapper.ContractTypeMapper;
+import com.alexlo.msvc_employee.employment.model.ContractTypeEntity;
+import com.alexlo.msvc_employee.employment.repository.ContractTypeRepository;
 import com.alexlo.msvc_employee.shared.exception.DuplicateResourceException;
+import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,6 @@ public class ContractTypeServiceImpl implements ContractTypeService{
     @Autowired
     ContractTypeRepository contractTypeRepository;
 
-    @Autowired
-    CatalogLookupService catalogLookupService;
-
     @Transactional
     @Override
     public ContractTypeResponseDTO create(CreateContractTypeRequestDTO dto) {
@@ -45,7 +42,7 @@ public class ContractTypeServiceImpl implements ContractTypeService{
         if (contractTypeRepository.existsByCodeIgnoreCaseAndIdNot(dto.code(), dto.id())) {
             throw new DuplicateResourceException("El código ya existe", "code");
         }
-        ContractTypeEntity contractType= catalogLookupService.getContractTypeById(dto.id());
+        ContractTypeEntity contractType= getContractTypeById(dto.id());
         contractTypeMapper.updateEntityFromDto(dto, contractType);
         return contractTypeMapper.toResponse(contractTypeRepository.save(contractType));
     }
@@ -66,14 +63,19 @@ public class ContractTypeServiceImpl implements ContractTypeService{
     @Transactional(readOnly = true)
     @Override
     public ContractTypeResponseDTO findById(Long id) {
-        return contractTypeMapper.toResponse(catalogLookupService.getContractTypeById(id));
+        return contractTypeMapper.toResponse(getContractTypeById(id));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        catalogLookupService.getContractTypeById(id);
+        getContractTypeById(id);
         contractTypeRepository.deleteById(id);
+    }
+
+    private ContractTypeEntity getContractTypeById(Long id){
+        return contractTypeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tipo de contrato no encontrado"));
     }
 
 }

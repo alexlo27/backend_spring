@@ -1,6 +1,6 @@
-package com.alexlo.msvc_employee.catalog.repository;
+package com.alexlo.msvc_employee.employment.repository;
 
-import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
+import com.alexlo.msvc_employee.employment.model.EmployeeTypeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

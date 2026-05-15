@@ -1,9 +1,9 @@
-package com.alexlo.msvc_employee.catalog.dto.request;
+package com.alexlo.msvc_employee.employment.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UpdateEmployeeTypeRequestDTO(
+public record UpdateContractTypeRequestDTO(
     @NotNull Long id,
     @NotBlank String code,
     @NotBlank String name,

@@ -3,7 +3,7 @@ package com.alexlo.msvc_employee.employee.service;
 import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
 import com.alexlo.msvc_employee.catalog.model.GenderEntity;
 import com.alexlo.msvc_employee.catalog.model.MaritalStatusEntity;
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
+import com.alexlo.msvc_employee.catalog.api.CatalogLookupService;
 import com.alexlo.msvc_employee.employee.dto.request.CreateEmployeeDTO;
 import com.alexlo.msvc_employee.employee.dto.request.UpdateEmployeeDTO;
 import com.alexlo.msvc_employee.employee.dto.response.EmployeeResponseDTO;
@@ -11,10 +11,10 @@ import com.alexlo.msvc_employee.employee.mapper.EmployeeMapper;
 import com.alexlo.msvc_employee.employee.model.EmployeeEntity;
 import com.alexlo.msvc_employee.employee.repository.EmployeeRepository;
 import com.alexlo.msvc_employee.employee.validator.EmployeeBusinessRules;
-import com.alexlo.msvc_employee.employee.validator.EmployeeLookupService;
 import com.alexlo.msvc_employee.employment.model.EmploymentEntity;
 import com.alexlo.msvc_employee.employment.repository.EmploymentRepository;
-import com.alexlo.msvc_employee.organization.validator.OrganizationLookupService;
+import com.alexlo.msvc_employee.organization.api.OrganizationLookupService;
+import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +45,6 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Autowired
     OrganizationLookupService organizationLookupService;
-
-    @Autowired
-    EmployeeLookupService employeeLookupService;
 
     @Transactional
     @Override
@@ -87,7 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     public EmployeeResponseDTO update(UpdateEmployeeDTO dto) {
         employeeBusinessRules.updateEmployee(dto);
 
-        EmployeeEntity employee = employeeLookupService.getEmployeeById(dto.id());
+        EmployeeEntity employee = getEmployeeById(dto.id());
         employeeMapper.updateEntityFromDto(dto, employee);
 
         if (dto.documentType() != null){
@@ -113,7 +110,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Transactional(readOnly = true)
     @Override
     public EmployeeResponseDTO findById(Long id) {
-        return employeeMapper.toResponse(employeeLookupService.getEmployeeById(id));
+        return employeeMapper.toResponse(getEmployeeById(id));
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +129,12 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Transactional
     @Override
     public void delete(Long id) {
-        employeeLookupService.getEmployeeById(id);
+        getEmployeeById(id);
         employeeRepository.deleteById(id);
+    }
+
+    public EmployeeEntity getEmployeeById(Long id){
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Empleado no encontrado"));
     }
 }

@@ -1,4 +1,4 @@
-package com.alexlo.msvc_employee.catalog.dto.response;
+package com.alexlo.msvc_employee.employment.dto.response;
 
 public record ContractTypeResponseDTO(
     Long id,

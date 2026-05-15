@@ -6,7 +6,6 @@ import com.alexlo.msvc_employee.catalog.dto.response.MaritalStatusResponseDTO;
 import com.alexlo.msvc_employee.catalog.maper.MaritalStatusMapper;
 import com.alexlo.msvc_employee.catalog.model.MaritalStatusEntity;
 import com.alexlo.msvc_employee.catalog.repository.MaritalStatusRepository;
-import com.alexlo.msvc_employee.catalog.validator.CatalogLookupService;
 import com.alexlo.msvc_employee.shared.exception.DuplicateResourceException;
 import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
@@ -28,9 +27,6 @@ public class MaritalStatusServiceImpl implements MaritalStatusService{
     @Autowired
     MaritalStatusRepository maritalStatusRepository;
 
-    @Autowired
-    CatalogLookupService catalogLookupService;
-
     @Transactional
     @Override
     public MaritalStatusResponseDTO create(CreateMaritalStatusRequestDTO dto) {
@@ -46,7 +42,7 @@ public class MaritalStatusServiceImpl implements MaritalStatusService{
         if (maritalStatusRepository.existsByCodeIgnoreCaseAndIdNot(dto.code(), dto.id())) {
             throw new DuplicateResourceException("El código ya existe", "code");
         }
-        MaritalStatusEntity maritalStatus= catalogLookupService.getMaritalStatusById(dto.id());
+        MaritalStatusEntity maritalStatus= getMaritalStatusById(dto.id());
         maritalStatusMapper.updateEntityFromDto(dto, maritalStatus);
         return maritalStatusMapper.toResponse(maritalStatusRepository.save(maritalStatus));
     }
@@ -67,14 +63,19 @@ public class MaritalStatusServiceImpl implements MaritalStatusService{
     @Transactional(readOnly = true)
     @Override
     public MaritalStatusResponseDTO findById(Long id) {
-        return maritalStatusMapper.toResponse(catalogLookupService.getMaritalStatusById(id));
+        return maritalStatusMapper.toResponse(getMaritalStatusById(id));
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        catalogLookupService.getMaritalStatusById(id);
+        getMaritalStatusById(id);
         maritalStatusRepository.deleteById(id);
+    }
+
+    public MaritalStatusEntity getMaritalStatusById(Long id){
+        return maritalStatusRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Estado civil no encontrado"));
     }
 
 }

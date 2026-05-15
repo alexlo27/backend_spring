@@ -1,8 +1,8 @@
-package com.alexlo.msvc_employee.catalog.service;
+package com.alexlo.msvc_employee.employment.service;
 
-import com.alexlo.msvc_employee.catalog.dto.request.CreateContractTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.request.UpdateContractTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.response.ContractTypeResponseDTO;
+import com.alexlo.msvc_employee.employment.dto.request.CreateContractTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.request.UpdateContractTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.response.ContractTypeResponseDTO;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import org.springframework.data.domain.Pageable;
 

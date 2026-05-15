@@ -1,9 +1,9 @@
-package com.alexlo.msvc_employee.catalog.maper;
+package com.alexlo.msvc_employee.employment.mapper;
 
-import com.alexlo.msvc_employee.catalog.dto.request.CreateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.request.UpdateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.response.EmployeeTypeResponseDTO;
-import com.alexlo.msvc_employee.catalog.model.EmployeeTypeEntity;
+import com.alexlo.msvc_employee.employment.dto.request.CreateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.request.UpdateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.response.EmployeeTypeResponseDTO;
+import com.alexlo.msvc_employee.employment.model.EmployeeTypeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

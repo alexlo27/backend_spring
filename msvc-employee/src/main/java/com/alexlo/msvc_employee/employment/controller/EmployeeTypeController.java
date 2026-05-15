@@ -1,9 +1,9 @@
-package com.alexlo.msvc_employee.catalog.controller;
+package com.alexlo.msvc_employee.employment.controller;
 
-import com.alexlo.msvc_employee.catalog.dto.request.CreateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.request.UpdateEmployeeTypeRequestDTO;
-import com.alexlo.msvc_employee.catalog.dto.response.EmployeeTypeResponseDTO;
-import com.alexlo.msvc_employee.catalog.service.EmployeeTypeService;
+import com.alexlo.msvc_employee.employment.dto.request.CreateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.request.UpdateEmployeeTypeRequestDTO;
+import com.alexlo.msvc_employee.employment.dto.response.EmployeeTypeResponseDTO;
+import com.alexlo.msvc_employee.employment.service.EmployeeTypeService;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

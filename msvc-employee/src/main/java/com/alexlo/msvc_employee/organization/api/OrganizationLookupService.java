@@ -1,4 +1,4 @@
-package com.alexlo.msvc_employee.organization.validator;
+package com.alexlo.msvc_employee.organization.api;
 
 import com.alexlo.msvc_employee.organization.model.DepartmentEntity;
 import com.alexlo.msvc_employee.organization.model.PositionEntity;

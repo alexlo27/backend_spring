@@ -1,4 +1,4 @@
-package com.alexlo.msvc_employee.catalog.model;
+package com.alexlo.msvc_employee.employment.model;
 
 import com.alexlo.msvc_employee.shared.audit.Auditable;
 import jakarta.persistence.*;
@@ -31,8 +31,8 @@ public class EmployeeTypeEntity extends Auditable {
     @Override
     public boolean equals(Object o) {
         if( this == o) return true;
-        if( !(o instanceof EmployeeTypeEntity gender)) return false;
-        return id != null && id.equals(gender.id);
+        if( !(o instanceof EmployeeTypeEntity employeeType)) return false;
+        return id != null && id.equals(employeeType.id);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class EmployeeTypeEntity extends Auditable {
 
     @Override
     public String toString() {
-        return "GenderEntity{" +
+        return "EmployeeTypeEntity{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
