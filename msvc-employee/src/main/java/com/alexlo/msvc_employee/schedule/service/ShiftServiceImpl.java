@@ -43,7 +43,9 @@ public class ShiftServiceImpl implements ShiftService {
             throw new DuplicateResourceException("El código ya existe", "code");
         }
         ShiftEntity shift = getShiftById(dto.id());
+        System.out.println("dto:::"+dto);
         shiftMapper.updateEntityFromDto(dto, shift);
+        System.out.println("entidad:::"+shift);
         return shiftMapper.toResponse(shiftRepository.save(shift));
     }
 

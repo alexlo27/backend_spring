@@ -11,8 +11,8 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 
 @Mapper(componentModel = "spring",
-        builder = @org.mapstruct.Builder(disableBuilder = true),
-        nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE
+        builder = @org.mapstruct.Builder(disableBuilder = true)
+        //nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE
 )
 public interface ContractTypeMapper {
 

@@ -1,5 +1,7 @@
 package com.alexlo.msvc_employee.shared.exception;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -112,5 +114,31 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolation(ConstraintViolationException ex) {
+
+        Map<String, Object> fieldErrors = new HashMap<>();
+
+        ex.getConstraintViolations().forEach(violation -> {
+            String field = violation.getPropertyPath().toString();
+
+            if (field.contains(".")) {
+                field = field.substring(field.lastIndexOf(".") + 1);
+            }
+
+            fieldErrors.put(field, violation.getMessage());
+        });
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("type", "https://api.tuservicio.com/errors/validation-error");
+        body.put("title", "Solicitud inválida");
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("detail", "Uno o más campos no cumplen con los requisitos");
+        body.put("timestamp", LocalDateTime.now());
+        body.put("errors", fieldErrors);
+
+        return ResponseEntity.badRequest().body(body);
     }
 }
