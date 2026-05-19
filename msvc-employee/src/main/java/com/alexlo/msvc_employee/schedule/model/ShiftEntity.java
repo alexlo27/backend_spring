@@ -45,7 +45,7 @@ public class ShiftEntity extends Auditable {
     @Column(name = "end_break")
     private LocalTime endBreak;
 
-    private Number tolerance;
+    private Integer tolerance;
 
     @Column(name = "check_in_start_time")
     private LocalTime checkInStartTime; // desde que hora se considera una marcacion de enttrada

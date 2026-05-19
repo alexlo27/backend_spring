@@ -14,7 +14,7 @@ public record CreateShiftRequestDTO(
     @NotNull LocalTime endTime,
     LocalTime startBreak,
     LocalTime endBreak,
-    Number tolerance,
+    Integer tolerance,
     LocalTime checkInStartTime,
     LocalTime checkInEndTime,
     LocalTime checkInEndBreak,
