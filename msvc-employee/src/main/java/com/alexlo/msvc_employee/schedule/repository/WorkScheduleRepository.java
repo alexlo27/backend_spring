@@ -17,4 +17,6 @@ public interface WorkScheduleRepository extends JpaRepository<WorkScheduleEntity
     List<WorkScheduleEntity> findByEmployeeIdAndDateBetween(Long employeeId, LocalDate startDate, LocalDate endDate);
 
     Page<WorkScheduleEntity> findByEmployeeId(Long employeeId, Pageable pageable);
+
+    List<WorkScheduleEntity> findByEmployeeIdAndSchedulePeriodId(Long employeeId, Long schedulePeriodId);
 }

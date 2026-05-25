@@ -40,6 +40,11 @@ public class WorkScheduleController {
         return ResponseEntity.ok(workScheduleService.all(employeeId, pageable));
     }
 
+    @GetMapping("/by-employee-period")
+    public ResponseEntity<List<WorkScheduleResponseDTO>> findByEmployeeAndPeriod(@RequestParam Long employeeId, @RequestParam Long schedulePeriodId) {
+        return ResponseEntity.ok(workScheduleService.findByEmployeeAndPeriod(employeeId, schedulePeriodId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<WorkScheduleResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(workScheduleService.findById(id));

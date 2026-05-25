@@ -26,6 +26,13 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
 """)
     Page<EmployeeEntity> search(@Param("name") String name, Pageable pageable);
 
+    @Query("""
+    SELECT e FROM EmployeeEntity e
+    WHERE LOWER(e.documentNumber) LIKE LOWER(CONCAT('%', :keyword, '%'))
+       OR LOWER(CONCAT(e.name, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :keyword, '%'))
+""")
+    Page<EmployeeEntity> autocomplete(@Param("keyword") String keyword, Pageable pageable);
+
     @Override
     @EntityGraph(attributePaths = {"documentType", "gender"})
     Page<EmployeeEntity> findAll(Pageable pageable);

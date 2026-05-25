@@ -31,7 +31,13 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<EmployeeResponseDTO>> all(@RequestParam(required = false) String name, Pageable pageable){
+    public ResponseEntity<PageResponse<EmployeeResponseDTO>> search(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String name,
+            Pageable pageable){
+        if (q != null) {
+            return ResponseEntity.ok(employeeService.autocomplete(q, pageable));
+        }
         return ResponseEntity.ok(employeeService.all(name, pageable));
     }
 

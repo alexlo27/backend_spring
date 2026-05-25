@@ -20,6 +20,8 @@ public interface WorkScheduleService {
 
     WorkScheduleResponseDTO findById(Long id);
 
+    List<WorkScheduleResponseDTO> findByEmployeeAndPeriod(Long employeeId, Long schedulePeriodId);
+
     void delete(Long id);
 
 }

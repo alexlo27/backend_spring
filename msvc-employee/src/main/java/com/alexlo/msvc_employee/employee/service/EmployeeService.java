@@ -19,6 +19,8 @@ public interface EmployeeService {
 
     PageResponse<EmployeeResponseDTO> all(String name, Pageable pageable);
 
+    PageResponse<EmployeeResponseDTO> autocomplete(String keyword, Pageable pageable);
+
     void delete(Long id);
 
 }

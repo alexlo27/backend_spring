@@ -92,6 +92,13 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
         return workScheduleMapper.toResponse(getWorkScheduleById(id));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<WorkScheduleResponseDTO> findByEmployeeAndPeriod(Long employeeId, Long schedulePeriodId) {
+        return workScheduleMapper.toResponseList(
+                workScheduleRepository.findByEmployeeIdAndSchedulePeriodId(employeeId, schedulePeriodId));
+    }
+
     @Transactional
     @Override
     public void delete(Long id) {

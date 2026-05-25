@@ -126,6 +126,16 @@ public class EmployeeServiceImpl implements EmployeeService{
         return PageMapper.map(result, employeeMapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<EmployeeResponseDTO> autocomplete(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isBlank()) {
+            return PageMapper.map(employeeRepository.findAll(pageable), employeeMapper::toResponse);
+        }
+        Page<EmployeeEntity> result = employeeRepository.autocomplete(keyword, pageable);
+        return PageMapper.map(result, employeeMapper::toResponse);
+    }
+
     @Transactional
     @Override
     public void delete(Long id) {
