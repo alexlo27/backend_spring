@@ -3,7 +3,9 @@ package com.alexlo.msvc_employee.employee.model;
 import com.alexlo.msvc_employee.catalog.model.DocumentTypeEntity;
 import com.alexlo.msvc_employee.catalog.model.GenderEntity;
 import com.alexlo.msvc_employee.catalog.model.MaritalStatusEntity;
+import com.alexlo.msvc_employee.employment.model.EmploymentEntity;
 import com.alexlo.msvc_employee.shared.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +14,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -65,6 +68,10 @@ public class EmployeeEntity  extends Auditable {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee")
+    private List<EmploymentEntity> employments;
 
     @Override
     public boolean equals(Object o) {

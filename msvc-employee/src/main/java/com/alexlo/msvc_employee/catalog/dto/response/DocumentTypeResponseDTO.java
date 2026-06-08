@@ -1,7 +1,5 @@
 package com.alexlo.msvc_employee.catalog.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
-
 public record DocumentTypeResponseDTO(
     Long id,
     String code,

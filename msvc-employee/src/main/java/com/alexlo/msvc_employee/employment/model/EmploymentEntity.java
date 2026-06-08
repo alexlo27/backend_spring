@@ -68,7 +68,7 @@ public class EmploymentEntity extends Auditable {
     public String toString() {
         return "EmploymentEntity{" +
                 "id=" + id +
-                ", employee=" + employee +
+                ", employeeId=" + employee.getId() +
                 ", department=" + department +
                 ", position=" + position +
                 ", startDate=" + startDate +
