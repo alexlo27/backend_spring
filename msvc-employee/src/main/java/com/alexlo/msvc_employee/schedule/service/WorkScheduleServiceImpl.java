@@ -12,6 +12,8 @@ import com.alexlo.msvc_employee.schedule.model.WorkScheduleEntity;
 import com.alexlo.msvc_employee.schedule.repository.SchedulePeriodRepository;
 import com.alexlo.msvc_employee.schedule.repository.ShiftRepository;
 import com.alexlo.msvc_employee.schedule.repository.WorkScheduleRepository;
+import com.alexlo.msvc_employee.schedule.repository.ScheduleReviewRepository;
+import com.alexlo.msvc_employee.shared.exception.BusinessRuleException;
 import com.alexlo.msvc_employee.shared.exception.NotFoundException;
 import com.alexlo.msvc_employee.shared.mapper.PageMapper;
 import com.alexlo.msvc_employee.shared.mapper.PageResponse;
@@ -41,9 +43,13 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
     @Autowired
     private ShiftRepository shiftRepository;
 
+    @Autowired
+    private ScheduleReviewRepository scheduleReviewRepository;
+
     @Transactional
     @Override
     public WorkScheduleResponseDTO create(CreateWorkScheduleRequestDTO dto) {
+        validateScheduleCanBeEdited(dto.employeeId(), dto.schedulePeriodId());
         WorkScheduleEntity entity = workScheduleMapper.toEntity(dto);
         entity.setSchedulePeriod(getSchedulePeriodById(dto.schedulePeriodId()));
         entity.setEmployee(getEmployeeById(dto.employeeId()));
@@ -56,6 +62,7 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
     @Transactional
     @Override
     public WorkScheduleResponseDTO update(UpdateWorkScheduleRequestDTO dto) {
+        validateScheduleCanBeEdited(dto.employeeId(), dto.schedulePeriodId());
         WorkScheduleEntity entity = getWorkScheduleById(dto.id());
         workScheduleMapper.updateEntityFromDto(dto, entity);
         if (dto.schedulePeriodId() != null) {
@@ -104,6 +111,18 @@ public class WorkScheduleServiceImpl implements WorkScheduleService {
     public void delete(Long id) {
         getWorkScheduleById(id);
         workScheduleRepository.deleteById(id);
+    }
+
+    private void validateScheduleCanBeEdited(Long employeeId, Long schedulePeriodId) {
+        scheduleReviewRepository
+                .findByEmployeeIdAndSchedulePeriodId(employeeId, schedulePeriodId)
+                .ifPresent(review -> {
+                    String code = review.getStatus().getCode();
+                    if (!List.of("DRAFT", "RETURNED").contains(code)) {
+                        throw new BusinessRuleException(
+                                "No se puede editar: el horario está en estado " + code);
+                    }
+                });
     }
 
     private WorkScheduleEntity getWorkScheduleById(Long id) {
